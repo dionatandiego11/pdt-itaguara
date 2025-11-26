@@ -1,0 +1,23 @@
+# Ambientes virtuais Python
+.venv/
+backend/.venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+backend/civicgit.log
+
+# Node / frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+package-lock.json
+
+# Arquivos temporários
+tmp.txt
+*.tmp

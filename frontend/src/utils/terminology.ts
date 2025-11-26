@@ -1,0 +1,16 @@
+export const TERMINOLOGY = {
+    REPOSITORY: 'Pasta Temática',
+    REPOSITORIES: 'Pastas Temáticas',
+    MAIN_BRANCH: 'Texto Vigente',
+    ISSUE: 'Demanda / Denúncia',
+    ISSUES: 'Demandas / Denúncias',
+    PULL_REQUEST: 'Proposta de Melhoria',
+    PULL_REQUESTS: 'Propostas de Melhoria',
+    DIFF: 'Antes e Depois',
+    MERGE: 'Promulgação',
+    FORK: 'Versão Alternativa',
+    FORKS: 'Versões Alternativas',
+    NEW_REPOSITORY: 'Nova Pasta Temática',
+    NEW_ISSUE: 'Nova Demanda',
+    NEW_PROPOSAL: 'Nova Proposta',
+} as const

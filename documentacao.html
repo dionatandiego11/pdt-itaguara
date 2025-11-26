@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação Técnica - CivicGit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0a0e1a;
+            --secondary-dark: #1a1f2e;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-dark);
+            color: var(--text-primary);
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .code-block {
+            background: var(--secondary-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+        
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid var(--accent-blue);
+        }
+        
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-left: 3px solid var(--accent-blue);
+        }
+        
+        .section-header {
+            scroll-margin-top: 120px;
+        }
+        
+        .requirement-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .requirement-card:hover {
+            border-left-color: var(--accent-blue);
+            transform: translateX(4px);
+        }
+        
+        .diff-added {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        
+        .diff-removed {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">CG</span>
+                    </div>
+                    <span class="text-xl font-bold">CivicGit</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-300 hover:text-white transition-colors">Início</a>
+                    <a href="#overview" class="text-gray-300 hover:text-white transition-colors">Visão Geral</a>
+                    <a href="#requisitos" class="text-gray-300 hover:text-white transition-colors">Requisitos</a>
+                    <a href="#api" class="text-gray-300 hover:text-white transition-colors">API</a>
+                </div>
+                <button class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-medium transition-colors">
+                    GitHub
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 pt-24">
+        <div class="grid lg:grid-cols-4 gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:col-span-1">
+                <div class="sidebar glass-effect p-4 rounded-xl">
+                    <h3 class="font-bold text-lg mb-4">Documentação</h3>
+                    <nav class="space-y-2">
+                        <a href="#overview" class="nav-item block p-3 rounded-lg text-sm">Visão Geral</a>
+                        <a href="#requisitos" class="nav-item block p-3 rounded-lg text-sm">Requisitos</a>
+                        <a href="#arquitetura" class="nav-item block p-3 rounded-lg text-sm">Arquitetura</a>
+                        <a href="#api" class="nav-item block p-3 rounded-lg text-sm">API Reference</a>
+                        <a href="#seguranca" class="nav-item block p-3 rounded-lg text-sm">Segurança</a>
+                        <a href="#governanca" class="nav-item block p-3 rounded-lg text-sm">Governança</a>
+                        <a href="#instalacao" class="nav-item block p-3 rounded-lg text-sm">Instalação</a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-3 space-y-12">
+                <!-- Overview Section -->
+                <section id="overview" class="section-header">
+                    <div class="glass-effect p-8 rounded-xl">
+                        <h1 class="text-4xl font-bold mb-6">Documentação Técnica</h1>
+                        <p class="text-xl text-gray-300 mb-8">
+                            Especificações completas do sistema CivicGit - Plataforma de Democracia Direta com Versionamento
+                        </p>
+                        
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold mb-3 text-blue-400">Conceito</h3>
+                                <p class="text-sm text-gray-300">
+                                    Leis como código-fonte, cidadãos como desenvolvedores, 
+                                    propostas como pull requests.
+                                </p>
+                            </div>
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold mb-3 text-green-400">Tecnologia</h3>
+                                <p class="text-sm text-gray-300">
+                                    Arquitetura de microsserviços, Git-core, 
+                                    identidade verificada, API aberta.
+                                </p>
+                            </div>
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold mb-3 text-purple-400">Filosofia</h3>
+                                <p class="text-sm text-gray-300">
+                                    Transparência total, participação real, 
+                                    governança colaborativa, software livre.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="code-block p-6 rounded-lg">
+                            <div class="text-sm font-mono text-gray-400 mb-4">// Exemplo de fluxo de proposta</div>
+                            <div class="text-sm font-mono space-y-2">
+                                <div><span class="text-gray-500">1.</span> Cidadão identifica problema → Cria Issue</div>
+                                <div><span class="text-gray-500">2.</span> Comunidade debate → Anexa evidências</div>
+                                <div><span class="text-gray-500">3.</span> Cidadão verificado → Cria Pull Request</div>
+                                <div><span class="text-gray-500">4.</span> Debate técnico → Code review público</div>
+                                <div><span class="text-gray-500">5.</span> Atinge limiar → Votação direta</div>
+                                <div><span class="text-gray-500">6.</span> Aprovado → Merge na branch main</div>
+                                <div><span class="text-gray-500">7.</span> Nova versão → Release oficial publicada</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Requirements Section -->
+                <section id="requisitos" class="section-header">
+                    <div class="glass-effect p-8 rounded-xl">
+                        <h2 class="text-3xl font-bold mb-8">Requisitos Detalhados</h2>
+                        
+                        <!-- Functional Requirements -->
+                        <div class="mb-12">
+                            <h3 class="text-2xl font-bold mb-6 text-blue-400">Requisitos Funcionais</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="requirement-card bg-gray-800 p-6 rounded-lg">
+                                    <h4 class="text-lg font-bold mb-3">RF-G: Mapeamento Git/GitHub</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-start space-x-3">
+                                            <span class="text-blue-400 font-mono text-sm">RF-G-01</span>
+                                            <div>
+                                                <p class="font-medium">Repositórios de Políticas</p>
+                                                <p class="text-sm text-gray-300">Criação de repositórios representando jurisdições ou áreas de política específicas.</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-3">
+                                            <span class="text-blue-400 font-mono text-sm">RF-G-02</span>
+                                            <div>
+                                                <p class="font-medium">Branch Principal Protegida</p>
+                                                <p class="text-sm text-gray-300">Branch 'main' representa a norma vigente, protegida contra commits diretos.</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-3">
+                                            <span class="text-blue-400 font-mono text-sm">RF-G-05</span>
+                                            <div>
+                                                <p class="font-medium">Pull Requests como Propostas</p>
+                                                <p class="text-sm text-gray-300">Sistema de PRs para propostas de emenda com debate centralizado.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="requirement-card bg-gray-800 p-6 rounded-lg">
+                                    <h4 class="text-lg font-bold mb-3">RF-ID: Identidade e Acesso</h4>
+                                    <div class="space-y-3">
+                                        <div class="grid md:grid-cols-4 gap-4 mt-4">
+                                            <div class="text-center p-3 bg-gray-700 rounded-lg">
+                                                <div class="text-2xl mb-2">👁️</div>
+                                                <div class="text-sm font-medium">Nível 0</div>
+                                                <div class="text-xs text-gray-400">Anônimo</div>
+                                                <div class="text-xs text-gray-400">Visualização</div>
+                                            </div>
+                                            <div class="text-center p-3 bg-blue-700 rounded-lg">
+                                                <div class="text-2xl mb-2">👤</div>
+                                                <div class="text-sm font-medium">Nível 1</div>
+                                                <div class="text-xs text-gray-300">Registrado</div>
+                                                <div class="text-xs text-gray-300">Comentários</div>
+                                            </div>
+                                            <div class="text-center p-3 bg-green-700 rounded-lg">
+                                                <div class="text-2xl mb-2">✅</div>
+                                                <div class="text-sm font-medium">Nível 2</div>
+                                                <div class="text-xs text-gray-300">Verificado</div>
+                                                <div class="text-xs text-gray-300">Votar, PRs</div>
+                                            </div>
+                                            <div class="text-center p-3 bg-purple-700 rounded-lg">
+                                                <div class="text-2xl mb-2">🛡️</div>
+                                                <div class="text-sm font-medium">Nível 3</div>
+                                                <div class="text-xs text-gray-300">Especial</div>
+                                                <div class="text-xs text-gray-300">Moderação</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="requirement-card bg-gray-800 p-6 rounded-lg">
+                                    <h4 class="text-lg font-bold mb-3">RF-DELIB: Fluxo de Deliberação</h4>
+                                    <div class="code-block p-4 rounded-lg">
+                                        <div class="text-sm font-mono">
+                                            <div class="flex items-center space-x-4 mb-2">
+                                                <span class="bg-yellow-600 px-2 py-1 rounded text-xs">Rascunho</span>
+                                                <span>→</span>
+                                                <span class="bg-blue-600 px-2 py-1 rounded text-xs">Em Discussão</span>
+                                                <span>→</span>
+                                                <span class="bg-purple-600 px-2 py-1 rounded text-xs">Aguardando Parecer</span>
+                                            </div>
+                                            <div class="flex items-center space-x-4">
+                                                <span class="bg-green-600 px-2 py-1 rounded text-xs">Atingiu Limiar</span>
+                                                <span>→</span>
+                                                <span class="bg-orange-600 px-2 py-1 rounded text-xs">Em Votação</span>
+                                                <span>→</span>
+                                                <span class="bg-green-700 px-2 py-1 rounded text-xs">Aprovado/Rejeitado</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Non-Functional Requirements -->
+                        <div class="mb-12">
+                            <h3 class="text-2xl font-bold mb-6 text-green-400">Requisitos Não Funcionais</h3>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="requirement-card bg-gray-800 p-6 rounded-lg">
+                                    <h4 class="text-lg font-bold mb-3 text-red-400">Escalabilidade</h4>
+                                    <p class="text-sm text-gray-300 mb-3">
+                                        Arquitetura horizontalmente escalável para suportar milhões 
+                                        de usuários simultâneos em repositórios de nível nacional.
+                                    </p>
+                                    <div class="text-xs text-gray-400">
+                                        • Microsserviços com Kubernetes<br>
+                                        • Cache distribuído com Redis<br>
+                                        • Banco de dados particionado
+                                    </div>
+                                </div>
+                                
+                                <div class="requirement-card bg-gray-800 p-6 rounded-lg">
+                                    <h4 class="text-lg font-bold mb-3 text-yellow-400">Segurança</h4>
+                                    <p class="text-sm text-gray-300 mb-3">
+                                        Autenticação forte, proteção contra fraude de votação 
+                                        e auditoria completa com voto secreto garantido.
+                                    </p>
+                                    <div class="text-xs text-gray-400">
+                                        • MFA obrigatória para usuários verificados<br>
+                                        • Criptografia de votos individuais<br>
+                                        • Detecção de bots e padrões suspeitos
+                                    </div>
+                                </div>
+                                
+                                <div class="requirement-card bg-gray-800 p-6 rounded-lg">
+                                    <h4 class="text-lg font-bold mb-3 text-blue-400">Disponibilidade</h4>
+                                    <p class="text-sm text-gray-300 mb-3">
+                                        99.95% de uptime com redundância, backups robustos 
+                                        e recuperação de desastres automatizada.
+                                    </p>
+                                    <div class="text-xs text-gray-400">
+                                        • Múltiplas zonas de disponibilidade<br>
+                                        • Backups incrementais automáticos<br>
+                                        • Failover automático
+                                    </div>
+                                </div>
+                                
+                                <div class="requirement-card bg-gray-800 p-6 rounded-lg">
+                                    <h4 class="text-lg font-bold mb-3 text-purple-400">Acessibilidade</h4>
+                                    <p class="text-sm text-gray-300 mb-3">
+                                        Compatível com WCAG 2.1 (Nível AA) para garantir 
+                                        acesso universal à plataforma democrática.
+                                    </p>
+                                    <div class="text-xs text-gray-400">
+                                        • Suporte a leitores de tela<br>
+                                        • Alto contraste e fontes legíveis<br>
+                                        • Navegação por teclado completa
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Architecture Section -->
+                <section id="arquitetura" class="section-header">
+                    <div class="glass-effect p-8 rounded-xl">
+                        <h2 class="text-3xl font-bold mb-8">Arquitetura do Sistema</h2>
+                        
+                        <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                            <div>
+                                <h3 class="text-xl font-bold mb-4 text-blue-400">Microsserviços</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-2xl">🔐</span>
+                                            <div>
+                                                <div class="font-medium">IAM Service</div>
+                                                <div class="text-xs text-gray-400">Identidade e acesso</div>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs bg-blue-600 px-2 py-1 rounded">Porta 8081</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-2xl">📂</span>
+                                            <div>
+                                                <div class="font-medium">Repo Service</div>
+                                                <div class="text-xs text-gray-400">Repositórios de políticas</div>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs bg-green-600 px-2 py-1 rounded">Porta 8082</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-2xl">📝</span>
+                                            <div>
+                                                <div class="font-medium">PR Service</div>
+                                                <div class="text-xs text-gray-400">Propostas e issues</div>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs bg-purple-600 px-2 py-1 rounded">Porta 8083</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-2xl">🗳️</span>
+                                            <div>
+                                                <div class="font-medium">Vote Service</div>
+                                                <div class="text-xs text-gray-400">Votação segura</div>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs bg-orange-600 px-2 py-1 rounded">Porta 8084</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-xl font-bold mb-4 text-green-400">Infraestrutura</h3>
+                                <div class="space-y-4">
+                                    <div class="bg-gray-800 p-4 rounded-lg">
+                                        <h4 class="font-medium mb-2">Banco de Dados</h4>
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex items-center justify-between">
+                                                <span>PostgreSQL</span>
+                                                <span class="text-xs bg-blue-600 px-2 py-1 rounded">Principal</span>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span>Redis</span>
+                                                <span class="text-xs bg-red-600 px-2 py-1 rounded">Cache</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-gray-800 p-4 rounded-lg">
+                                        <h4 class="font-medium mb-2">Versionamento</h4>
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex items-center justify-between">
+                                                <span>LibGit2</span>
+                                                <span class="text-xs bg-green-600 px-2 py-1 rounded">Core</span>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span>Diff-Match-Patch</span>
+                                                <span class="text-xs bg-purple-600 px-2 py-1 rounded">Texto</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-gray-800 p-4 rounded-lg">
+                                        <h4 class="font-medium mb-2">Deploy</h4>
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex items-center justify-between">
+                                                <span>Docker</span>
+                                                <span class="text-xs bg-blue-600 px-2 py-1 rounded">Container</span>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span>Kubernetes</span>
+                                                <span class="text-xs bg-green-600 px-2 py-1 rounded">Orquestração</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="code-block p-6 rounded-lg">
+                            <div class="text-sm font-mono text-gray-400 mb-4">// Exemplo de configuração Docker Compose</div>
+                            <pre class="text-sm font-mono"><code>version: '3.8'
+services:
+  civicgit-api:
+    image: civicgit/api:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://user:pass@postgres:5432/civicgit
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=civicgit
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- API Section -->
+                <section id="api" class="section-header">
+                    <div class="glass-effect p-8 rounded-xl">
+                        <h2 class="text-3xl font-bold mb-8">API Reference</h2>
+                        
+                        <div class="mb-8">
+                            <p class="text-gray-300 mb-6">
+                                A API pública do CivicGit fornece acesso completo aos dados públicos 
+                                da plataforma para transparência total e desenvolvimento de aplicações cívicas.
+                            </p>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-gray-800 p-6 rounded-lg">
+                                    <h3 class="text-lg font-bold mb-4 text-blue-400">Endpoints Principais</h3>
+                                    <div class="space-y-3 font-mono text-sm">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-green-400">GET</span>
+                                            <span class="text-gray-300">/api/v1/repositories</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-green-400">GET</span>
+                                            <span class="text-gray-300">/api/v1/proposals</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-green-400">GET</span>
+                                            <span class="text-gray-300">/api/v1/issues</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-green-400">GET</span>
+                                            <span class="text-gray-300">/api/v1/votes</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-green-400">GET</span>
+                                            <span class="text-gray-300">/api/v1/comments</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gray-800 p-6 rounded-lg">
+                                    <h3 class="text-lg font-bold mb-4 text-green-400">Autenticação</h3>
+                                    <div class="space-y-3 text-sm">
+                                        <p class="text-gray-300">
+                                            A API usa autenticação via OAuth2. Tokens de acesso 
+                                            devem ser incluídos no header Authorization.
+                                        </p>
+                                        <div class="code-block p-3 rounded">
+                                            <div class="font-mono text-xs">
+                                                Authorization: Bearer &lt;token&gt;
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="code-block p-6 rounded-lg">
+                                <h4 class="text-lg font-bold mb-4">Exemplo: Listar Propostas</h4>
+                                <div class="mb-4">
+                                    <span class="bg-green-600 px-3 py-1 rounded text-sm font-mono">GET</span>
+                                    <span class="font-mono text-gray-300 ml-2">/api/v1/proposals?status=open&limit=10</span>
+                                </div>
+                                <pre class="text-sm font-mono"><code>{
+  "proposals": [
+    {
+      "id": "pr_12345",
+      "title": "Emenda ao Art. 12 - Iluminação Pública",
+      "author": {
+        "id": "user_67890",
+        "name": "João Silva",
+        "verified": true
+      },
+      "status": "em_discussao",
+      "created_at": "2025-11-14T10:30:00Z",
+      "updated_at": "2025-11-16T14:20:00Z",
+      "signatures": 247,
+      "threshold": 500,
+      "repository": "lei-1234-iluminacao-publica"
+    }
+  ],
+  "pagination": {
+    "total": 42,
+    "page": 1,
+    "per_page": 10
+  }
+}</code></pre>
+                            </div>
+                            
+                            <div class="code-block p-6 rounded-lg">
+                                <h4 class="text-lg font-bold mb-4">Exemplo: Detalhes de Votação</h4>
+                                <div class="mb-4">
+                                    <span class="bg-green-600 px-3 py-1 rounded text-sm font-mono">GET</span>
+                                    <span class="font-mono text-gray-300 ml-2">/api/v1/votes/proposal/pr_12345</span>
+                                </div>
+                                <pre class="text-sm font-mono"><code>{
+  "proposal_id": "pr_12345",
+  "status": "em_votacao",
+  "voting_method": "simples",
+  "quorum_required": 1000,
+  "participation": 847,
+  "results": {
+    "sim": 567,
+    "nao": 280,
+    "abstencao": 0
+  },
+  "started_at": "2025-11-16T09:00:00Z",
+  "ends_at": "2025-11-23T09:00:00Z"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Security Section -->
+                <section id="seguranca" class="section-header">
+                    <div class="glass-effect p-8 rounded-xl">
+                        <h2 class="text-3xl font-bold mb-8">Segurança e Privacidade</h2>
+                        
+                        <div class="grid md:grid-cols-2 gap-8 mb-8">
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-xl font-bold mb-4 text-red-400">Autenticação</h3>
+                                <ul class="space-y-2 text-sm text-gray-300">
+                                    <li>• OAuth2 e OpenID Connect</li>
+                                    <li>• MFA obrigatória para usuários verificados</li>
+                                    <li>• Integração com identidade governamental</li>
+                                    <li>• Sessões com expiração configurável</li>
+                                    <li>• Revogação automática em caso de suspeita</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-xl font-bold mb-4 text-green-400">Votação</h3>
+                                <ul class="space-y-2 text-sm text-gray-300">
+                                    <li>• Voto individual criptografado</li>
+                                    <li>• Participação auditável publicamente</li>
+                                    <li>• Proteção contra voto duplo</li>
+                                    <li>• Detecção de padrões anômalos</li>
+                                    <li>• Resistência à coerção</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-800 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-4 text-blue-400">Conformidade Legal</h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div>
+                                    <h4 class="font-medium mb-2">LGPD/GDPR</h4>
+                                    <p class="text-sm text-gray-300">
+                                        Total conformidade com leis de proteção de dados. 
+                                        Dados pessoais não são públicos.
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium mb-2">Auditoria</h4>
+                                    <p class="text-sm text-gray-300">
+                                        Logs imutáveis de todas as ações. 
+                                        Transparência total do processo decisório.
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium mb-2">Acesso Universal</h4>
+                                    <p class="text-sm text-gray-300">
+                                        Compatível com WCAG 2.1 AA. 
+                                        Acesso garantido para todos os cidadãos.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Governance Section -->
+                <section id="governanca" class="section-header">
+                    <div class="glass-effect p-8 rounded-xl">
+                        <h2 class="text-3xl font-bold mb-8">Governança do Sistema</h2>
+                        
+                        <div class="space-y-8">
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-xl font-bold mb-4 text-purple-400">Mantenedores de Repositório</h3>
+                                <p class="text-gray-300 mb-4">
+                                    Cada repositório tem mantenedores responsáveis pela governança 
+                                    do conteúdo e moderação do debate.
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h4 class="font-medium mb-2 text-blue-400">Poderes</h4>
+                                        <ul class="text-sm text-gray-300 space-y-1">
+                                            <li>• Anexar pareceres técnicos</li>
+                                            <li>• Solicitar mudanças em PRs</li>
+                                            <li>• Moderar debates</li>
+                                            <li>• Arquivar issues duplicadas</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium mb-2 text-green-400">Responsabilidades</h4>
+                                        <ul class="text-sm text-gray-300 space-y-1">
+                                            <li>• Manter qualidade das propostas</li>
+                                            <li>• Garantir conformidade legal</li>
+                                            <li>• Promover debate construtivo</li>
+                                            <li>• Transparência nas decisões</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-xl font-bold mb-4 text-orange-400">Modelos de Governança</h3>
+                                <div class="grid md:grid-cols-3 gap-4">
+                                    <div class="text-center p-4 bg-gray-700 rounded-lg">
+                                        <div class="text-2xl mb-2">🗳️</div>
+                                        <h4 class="font-medium mb-2">Eleição</h4>
+                                        <p class="text-sm text-gray-300">
+                                            Mantenedores eleitos pela comunidade 
+                                            em votação periódica.
+                                        </p>
+                                    </div>
+                                    <div class="text-center p-4 bg-gray-700 rounded-lg">
+                                        <div class="text-2xl mb-2">🎲</div>
+                                        <h4 class="font-medium mb-2">Sorteio</h4>
+                                        <p class="text-sm text-gray-300">
+                                            Seleção aleatória de cidadãos 
+                                            para governança rotativa.
+                                        </p>
+                                    </div>
+                                    <div class="text-center p-4 bg-gray-700 rounded-lg">
+                                        <div class="text-2xl mb-2">⭐</div>
+                                        <h4 class="font-medium mb-2">Reputação</h4>
+                                        <p class="text-sm text-gray-300">
+                                            Baseado em contribuições 
+                                            e reconhecimento da comunidade.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Installation Section -->
+                <section id="instalacao" class="section-header">
+                    <div class="glass-effect p-8 rounded-xl">
+                        <h2 class="text-3xl font-bold mb-8">Instalação e Configuração</h2>
+                        
+                        <div class="space-y-8">
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-xl font-bold mb-4 text-blue-400">Requisitos de Sistema</h3>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <h4 class="font-medium mb-2">Software</h4>
+                                        <ul class="text-sm text-gray-300 space-y-1">
+                                            <li>• Docker 20.10+</li>
+                                            <li>• Docker Compose 2.0+</li>
+                                            <li>• PostgreSQL 15+</li>
+                                            <li>• Redis 7+</li>
+                                            <li>• Node.js 18+ (para desenvolvimento)</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium mb-2">Hardware (Mínimo)</h4>
+                                        <ul class="text-sm text-gray-300 space-y-1">
+                                            <li>• 4 GB RAM</li>
+                                            <li>• 2 vCPUs</li>
+                                            <li>• 50 GB SSD</li>
+                                            <li>• Conexão de rede estável</li>
+                                            <li>• SSL/TLS certificates</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="code-block p-6 rounded-lg">
+                                <h4 class="text-lg font-bold mb-4">Instalação Rápida</h4>
+                                <pre class="text-sm font-mono"><code># Clone o repositório
+git clone https://github.com/civicgit/civicgit.git
+cd civicgit
+
+# Configure as variáveis de ambiente
+cp .env.example .env
+# Edite o arquivo .env com suas configurações
+
+# Inicie os serviços
+docker-compose up -d
+
+# Verifique se todos os serviços estão rodando
+docker-compose ps
+
+# Execute as migrações do banco de dados
+docker-compose exec api npm run migrate
+
+# Crie o usuário administrador inicial
+docker-compose exec api npm run seed</code></pre>
+                            </div>
+                            
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-xl font-bold mb-4 text-green-400">Verificação da Instalação</h3>
+                                <p class="text-gray-300 mb-4">
+                                    Após a instalação, verifique se o sistema está funcionando corretamente 
+                                    acessando os endpoints de health check.
+                                </p>
+                                <div class="code-block p-4 rounded-lg">
+                                    <div class="font-mono text-sm">
+                                        <div class="text-gray-400 mb-2"># Health check do API</div>
+                                        <div>curl http://localhost:8080/health</div>
+                                        <div class="text-gray-400 mt-3 mb-2"># Health check do banco de dados</div>
+                                        <div>curl http://localhost:8080/health/db</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">CG</span>
+                    </div>
+                    <span class="text-xl font-bold">CivicGit</span>
+                </div>
+                
+                <div class="flex items-center space-x-6 text-sm text-gray-400">
+                    <span>© 2025 CivicGit - Democracia Direta Digital</span>
+                    <span>•</span>
+                    <span>Licenciado sob AGPLv3</span>
+                    <span>•</span>
+                    <span>Transparência Total</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Active navigation highlighting
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.section-header');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

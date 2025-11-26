@@ -1,4 +1,3 @@
-﻿
 # CivicGit Backend
 
 Backend API para o CivicGit - Sistema de Democracia Direta com Versionamento
@@ -77,13 +76,12 @@ Backend API para o CivicGit - Sistema de Democracia Direta com Versionamento
 ### Método 1: Instalação Automatizada (Recomendado)
 
 ```bash
-# Baixar e executar o instalador
-curl -fsSL https://civicgit.org/install.sh | bash
-
-# Ou manualmente
+# Após clonar o repositório, na raiz do projeto:
 chmod +x install.sh
 ./install.sh
 ```
+
+O script valida os pré-requisitos, aplica as migrações (`alembic upgrade head`) e popula dados básicos automaticamente.
 
 ### Método 2: Docker Compose
 
@@ -97,7 +95,11 @@ cp .env.example .env
 # Editar .env com suas configurações
 
 # Iniciar serviços
-docker-compose up -d
+docker compose up -d
+
+# Aplicar migrações e seed
+docker compose exec api alembic upgrade head
+docker compose exec api python app/db/init_db.py
 ```
 
 ### Método 3: Instalação Manual
@@ -107,6 +109,7 @@ docker-compose up -d
 pip install -r requirements.txt
 
 # Configurar banco de dados
+alembic upgrade head
 python app/db/init_db.py
 
 # Iniciar aplicação
@@ -167,7 +170,7 @@ GOV_BR_CLIENT_SECRET=your-gov-br-client-secret
 
 # Application
 DEBUG=True
-CORS_ORIGINS=["http://localhost:3000"]
+CORS_ORIGINS=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:8080"]
 ```
 
 ### Configuração de Votação
@@ -183,11 +186,33 @@ VOTING_PERIOD_DAYS=7
 MIN_SIGNATURES_FOR_VOTING=500
 ```
 
+## Migrações de Banco
+
+O schema é versionado com **Alembic** (arquivos em `app/db/migrations/`). Principais comandos:
+
+```bash
+# Aplicar migrations (ambiente local)
+alembic upgrade head
+
+# Criar nova migration
+alembic revision --autogenerate -m "sua mensagem"
+```
+
+Executando via Docker Compose:
+
+```bash
+cd backend
+docker compose exec api alembic upgrade head
+```
+
 ## 🧪 Testes
 
 ```bash
 # Rodar todos os testes
 pytest
+
+# Rodar apenas testes do backend
+pytest backend/tests -q
 
 # Rodar testes com cobertura
 pytest --cov=app --cov-report=html
@@ -203,10 +228,10 @@ pytest tests/test_proposals.py
 
 ```bash
 # Build para produção
-docker-compose -f docker-compose.prod.yml build
+docker compose -f docker-compose.prod.yml build
 
 # Deploy
-docker-compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 ### Deploy com Kubernetes
@@ -266,8 +291,14 @@ kubectl get services
 Este projeto está licenciado sob a AGPLv3 - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
 ## 👥 Comunidade
+
+- [Discord](https://discord.gg/civicgit)
+- [Forum](https://forum.civicgit.org)
 - [GitHub Issues](https://github.com/civicgit/civicgit/issues)
 
 ## 🙏 Agradecimentos
 
+- Comunidade FastAPI
+- Contribuidores do SQLAlchemy
+- Desenvolvedores do PostgreSQL
 - Todos os contribuidores open source

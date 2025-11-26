@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicGit - Democracia Direta com Versionamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.birds.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0a0e1a;
+            --secondary-dark: #1a1f2e;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .code-block {
+            background: var(--secondary-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .diff-added {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        
+        .diff-removed {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
+        }
+        
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 1s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        #vanta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .content-overlay {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">CG</span>
+                    </div>
+                    <span class="text-xl font-bold">CivicGit</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#conceito" class="text-gray-300 hover:text-white transition-colors">Conceito</a>
+                    <a href="#funcionalidades" class="text-gray-300 hover:text-white transition-colors">Funcionalidades</a>
+                    <a href="#arquitetura" class="text-gray-300 hover:text-white transition-colors">Arquitetura</a>
+                    <a href="#documentacao" class="text-gray-300 hover:text-white transition-colors">Documentação</a>
+                </div>
+                <button class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-medium transition-colors">
+                    Começar
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center relative">
+        <div id="vanta-bg"></div>
+        <div class="content-overlay w-full">
+            <div class="max-w-7xl mx-auto px-6 py-20">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="animate-fade-in">
+                        <h1 class="section-title mb-6">
+                            <span class="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
+                                Democracia Direta
+                            </span>
+                            <br>
+                            com Versionamento
+                        </h1>
+                        <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                            Transforme cidadãos em desenvolvedores ativos do código político. 
+                            Leis como repositórios, propostas como pull requests, 
+                            debates como code review.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                            <button class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105">
+                                Explorar Plataforma
+                            </button>
+                            <button class="border border-gray-600 hover:border-gray-400 px-8 py-4 rounded-lg font-semibold transition-colors">
+                                Ver Documentação
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-8 text-sm text-gray-400">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                <span>Open Source (AGPLv3)</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                <span>Transparente por Design</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="animate-slide-in">
+                        <div class="glass-effect p-6 rounded-xl">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                </div>
+                                <span class="text-sm text-gray-400 font-mono">civicgit://lei-1234</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="code-block p-3 rounded">
+                                    <div class="text-sm text-gray-400 mb-2 font-mono"># Proposta: Art. 12 - Iluminação Pública</div>
+                                    <div class="text-sm">
+                                        <span class="diff-removed p-1 rounded">- A iluminação pública será mantida até 22h</span>
+                                        <br>
+                                        <span class="diff-added p-1 rounded">+ A iluminação pública funcionará 24h em áreas de segurança</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between text-sm text-gray-400">
+                                    <span>👤 João Silva • 2h atrás</span>
+                                    <span class="bg-blue-600 px-2 py-1 rounded text-xs">Em Discussão</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conceito Section -->
+    <section id="conceito" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="section-title mb-6">
+                    <span class="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                        O Conceito
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    CivicGit trata leis, políticas públicas e orçamentos como "código-fonte" cívico. 
+                    Documentos vivos, versionáveis e colaborativos.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="feature-card glass-effect p-6 rounded-xl">
+                    <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">📝</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Issues</h3>
+                    <p class="text-gray-300">
+                        Problemas identificados pelos cidadãos se tornam "Issues" nos repositórios governamentais.
+                    </p>
+                </div>
+                
+                <div class="feature-card glass-effect p-6 rounded-xl">
+                    <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">🔀</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Pull Requests</h3>
+                    <p class="text-gray-300">
+                        Propostas de mudança são "Pull Requests" com debate linha por linha do texto proposto.
+                    </p>
+                </div>
+                
+                <div class="feature-card glass-effect p-6 rounded-xl">
+                    <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">👥</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Code Review</h3>
+                    <p class="text-gray-300">
+                        O debate público se torna um "code review" colaborativo com pareceres técnicos.
+                    </p>
+                </div>
+                
+                <div class="feature-card glass-effect p-6 rounded-xl">
+                    <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">✅</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Merge</h3>
+                    <p class="text-gray-300">
+                        Após votação, o PR é "mergeado" e uma nova versão oficial da lei é publicada.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Funcionalidades Section -->
+    <section id="funcionalidades" class="py-20 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="section-title mb-6">
+                    <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        Funcionalidades
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Uma plataforma completa para democracia direta digital com transparência total
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="space-y-8">
+                        <div class="glass-effect p-6 rounded-xl">
+                            <h3 class="text-2xl font-bold mb-4 flex items-center">
+                                <span class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3 text-sm">1</span>
+                                Versionamento Completo
+                            </h3>
+                            <p class="text-gray-300 mb-4">
+                                Cada alteração em uma lei é rastreada com autor, justificativa e histórico de debate. 
+                                Visualize diffs linha por linha e acesse o blame para ver responsáveis.
+                            </p>
+                            <div class="code-block p-4 rounded-lg">
+                                <div class="text-sm font-mono text-gray-400 mb-2">Histórico de Commits</div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex items-center justify-between">
+                                        <span>✅ Aprovada votação da emenda #42</span>
+                                        <span class="text-gray-500">2h atrás</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span>💬 Adicionado parecer técnico da SEFAZ</span>
+                                        <span class="text-gray-500">1d atrás</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span>📝 Criada proposta de alteração do Art. 12</span>
+                                        <span class="text-gray-500">3d atrás</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-effect p-6 rounded-xl">
+                            <h3 class="text-2xl font-bold mb-4 flex items-center">
+                                <span class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center mr-3 text-sm">2</span>
+                                Identidade Verificada
+                            </h3>
+                            <p class="text-gray-300 mb-4">
+                                Sistema de níveis de acesso com verificação via identidade digital governamental (Gov.br, CPF). 
+                                Cidadãos verificados podem votar e criar propostas formais.
+                            </p>
+                            <div class="grid grid-cols-3 gap-4 mt-4">
+                                <div class="text-center p-3 bg-gray-700 rounded-lg">
+                                    <div class="text-2xl mb-2">👤</div>
+                                    <div class="text-sm font-medium">Registrado</div>
+                                    <div class="text-xs text-gray-400">Comentários, Issues</div>
+                                </div>
+                                <div class="text-center p-3 bg-blue-700 rounded-lg">
+                                    <div class="text-2xl mb-2">✅</div>
+                                    <div class="text-sm font-medium">Verificado</div>
+                                    <div class="text-xs text-gray-300">Votos, PRs</div>
+                                </div>
+                                <div class="text-center p-3 bg-purple-700 rounded-lg">
+                                    <div class="text-2xl mb-2">🛡️</div>
+                                    <div class="text-sm font-medium">Especial</div>
+                                    <div class="text-xs text-gray-300">Moderação</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4">Votação Segura</h3>
+                        <p class="text-gray-300 mb-4 text-sm">
+                            Múltiplos métodos de votação: simples, qualificada e ranqueada. 
+                            Voto secreto com auditoria pública da participação.
+                        </p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-sm">
+                                <span>Sim</span>
+                                <span class="text-green-400">1,247 (67%)</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 67%"></div>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span>Não</span>
+                                <span class="text-red-400">613 (33%)</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-red-500 h-2 rounded-full" style="width: 33%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4">API Aberta</h3>
+                        <p class="text-gray-300 mb-4 text-sm">
+                            Todos os dados públicos disponíveis via API REST/GraphQL para 
+                            transparência total e desenvolvimento de aplicações cívicas.
+                        </p>
+                        <div class="font-mono text-xs bg-gray-700 p-3 rounded">
+                            GET /api/v1/proposals<br>
+                            GET /api/v1/votes<br>
+                            GET /api/v1/comments
+                        </div>
+                    </div>
+                    
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4">Gamificação</h3>
+                        <p class="text-gray-300 mb-4 text-sm">
+                            Sistema de reputação baseado em contribuições construtivas. 
+                            Gráficos de contribuição como no GitHub.
+                        </p>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-3 h-3 bg-gray-600 rounded-sm"></div>
+                            <div class="w-3 h-3 bg-green-300 rounded-sm"></div>
+                            <div class="w-3 h-3 bg-green-500 rounded-sm"></div>
+                            <div class="w-3 h-3 bg-green-700 rounded-sm"></div>
+                            <div class="w-3 h-3 bg-green-300 rounded-sm"></div>
+                            <span class="text-xs text-gray-400 ml-2">+127 pontos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Arquitetura Section -->
+    <section id="arquitetura" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="section-title mb-6">
+                    <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        Arquitetura
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Microsserviços escaláveis e modularizados para máxima flexibilidade
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="space-y-6">
+                        <div class="glass-effect p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 flex items-center">
+                                <span class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-4 text-sm font-mono">BE</span>
+                                Backend Services
+                            </h3>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div class="bg-gray-800 p-3 rounded-lg">
+                                    <div class="font-medium text-blue-400">IAM</div>
+                                    <div class="text-gray-400 text-xs">Identidade & Acesso</div>
+                                </div>
+                                <div class="bg-gray-800 p-3 rounded-lg">
+                                    <div class="font-medium text-green-400">Git-Core</div>
+                                    <div class="text-gray-400 text-xs">Versionamento</div>
+                                </div>
+                                <div class="bg-gray-800 p-3 rounded-lg">
+                                    <div class="font-medium text-purple-400">PRs</div>
+                                    <div class="text-gray-400 text-xs">Propostas</div>
+                                </div>
+                                <div class="bg-gray-800 p-3 rounded-lg">
+                                    <div class="font-medium text-orange-400">Vote</div>
+                                    <div class="text-gray-400 text-xs">Votação</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-effect p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 flex items-center">
+                                <span class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-4 text-sm font-mono">DB</span>
+                                Banco de Dados
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">PostgreSQL</span>
+                                    <span class="text-xs bg-blue-600 px-2 py-1 rounded">Principal</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">Redis</span>
+                                    <span class="text-xs bg-red-600 px-2 py-1 rounded">Cache</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">LibGit2</span>
+                                    <span class="text-xs bg-green-600 px-2 py-1 rounded">Versionamento</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-6">Stack Tecnológica</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-2xl">⚡</span>
+                                    <div>
+                                        <div class="font-medium">Backend</div>
+                                        <div class="text-sm text-gray-400">Go / Python / Node.js</div>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-blue-600 px-2 py-1 rounded">Alta Performance</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-2xl">🎨</span>
+                                    <div>
+                                        <div class="font-medium">Frontend</div>
+                                        <div class="text-sm text-gray-400">React / Vue.js</div>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-green-600 px-2 py-1 rounded">UX Moderna</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-2xl">🐳</span>
+                                    <div>
+                                        <div class="font-medium">Infraestrutura</div>
+                                        <div class="text-sm text-gray-400">Docker / Kubernetes</div>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-purple-600 px-2 py-1 rounded">Escalável</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-2xl">🔐</span>
+                                    <div>
+                                        <div class="font-medium">Segurança</div>
+                                        <div class="text-sm text-gray-400">OAuth2 / OIDC / MFA</div>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-red-600 px-2 py-1 rounded">Verificada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentação Section -->
+    <section id="documentacao" class="py-20 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="section-title mb-6">
+                    <span class="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                        Documentação
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Requisitos detalhados e especificações técnicas do sistema
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="glass-effect p-6 rounded-xl">
+                    <h3 class="text-2xl font-bold mb-6">Requisitos Funcionais</h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <h4 class="font-semibold text-blue-400">RF-G: Metáfora Git</h4>
+                            <p class="text-sm text-gray-300 mt-1">
+                                Sistema completo de repositórios, branches, commits e pull requests 
+                                adaptado para legislação.
+                            </p>
+                        </div>
+                        
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h4 class="font-semibold text-green-400">RF-ID: Identidade</h4>
+                            <p class="text-sm text-gray-300 mt-1">
+                                Múltiplos níveis de acesso com verificação governamental 
+                                e perfis públicos de reputação.
+                            </p>
+                        </div>
+                        
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <h4 class="font-semibold text-purple-400">RF-PART: Participação</h4>
+                            <p class="text-sm text-gray-300 mt-1">
+                                Fluxo intuitivo de propostas, debates em threads e 
+                                mecanismos de apoio com limiares configuráveis.
+                            </p>
+                        </div>
+                        
+                        <div class="border-l-4 border-orange-500 pl-4">
+                            <h4 class="font-semibold text-orange-400">RF-DELIB: Deliberação</h4>
+                            <p class="text-sm text-gray-300 mt-1">
+                                Ciclo de vida completo de propostas com votação segura 
+                                e múltiplos métodos de votação.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-effect p-6 rounded-xl">
+                    <h3 class="text-2xl font-bold mb-6">Requisitos Não Funcionais</h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-red-500 pl-4">
+                            <h4 class="font-semibold text-red-400">RNF-01: Escalabilidade</h4>
+                            <p class="text-sm text-gray-300 mt-1">
+                                Arquitetura horizontalmente escalável para milhões 
+                                de usuários simultâneos.
+                            </p>
+                        </div>
+                        
+                        <div class="border-l-4 border-yellow-500 pl-4">
+                            <h4 class="font-semibold text-yellow-400">RNF-02: Segurança</h4>
+                            <p class="text-sm text-gray-300 mt-1">
+                                Autenticação forte (MFA), proteção contra fraude 
+                                e auditoria completa de votos.
+                            </p>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-500 pl-4">
+                            <h4 class="font-semibold text-indigo-400">RNF-03: Disponibilidade</h4>
+                            <p class="text-sm text-gray-300 mt-1">
+                                99.95% de uptime com redundância e backups 
+                                robustos para garantir continuidade.
+                            </p>
+                        </div>
+                        
+                        <div class="border-l-4 border-pink-500 pl-4">
+                            <h4 class="font-semibold text-pink-400">RNF-04: Acessibilidade</h4>
+                            <p class="text-sm text-gray-300 mt-1">
+                                Compatível com WCAG 2.1 (Nível AA) para 
+                                acesso universal à plataforma.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <div class="glass-effect p-8 rounded-xl max-w-4xl mx-auto">
+                    <h3 class="text-2xl font-bold mb-4">Licenciamento Open Source</h3>
+                    <p class="text-gray-300 mb-6">
+                        O CivicGit é licenciado sob AGPLv3 para garantir que qualquer modificação 
+                        seja compartilhada de volta com a comunidade, evitando a captura privada 
+                        de software público.
+                    </p>
+                    <div class="flex items-center justify-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                            <span class="text-sm">Código Aberto</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 bg-green-500 rounded"></div>
+                            <span class="text-sm">Modificações Compartilhadas</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-4 h-4 bg-purple-500 rounded"></div>
+                            <span class="text-sm">Comunidade Protegida</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">CG</span>
+                    </div>
+                    <span class="text-xl font-bold">CivicGit</span>
+                </div>
+                
+                <div class="flex items-center space-x-6 text-sm text-gray-400">
+                    <span>© 2025 CivicGit - Democracia Direta Digital</span>
+                    <span>•</span>
+                    <span>Licenciado sob AGPLv3</span>
+                    <span>•</span>
+                    <span>Transparência Total</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Vanta.js background
+        VANTA.BIRDS({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            backgroundColor: 0x0a0e1a,
+            color1: 0x3b82f6,
+            color2: 0x10b981,
+            birdSize: 1.20,
+            wingSpan: 25.00,
+            speedLimit: 3.00,
+            separation: 20.00,
+            alignment: 20.00,
+            cohesion: 20.00,
+            quantity: 3.00
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add scroll effect to navigation
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(10, 14, 26, 0.95)';
+            } else {
+                nav.style.background = 'rgba(255, 255, 255, 0.05)';
+            }
+        });
+        
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
