@@ -1,4 +1,4 @@
-﻿# CivicGit - Sistema de Democracia Direta
+﻿# CivicGit - Sistema de Democracia Direta (PDT Itaguara)
 
 CivicGit é uma plataforma de democracia direta com versionamento de leis, inspirada no Git. O sistema permite que cidadãos proponham, debatam e votem em emendas legislativas de forma transparente e auditável.
 
