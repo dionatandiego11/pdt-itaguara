@@ -1,273 +1,128 @@
-﻿
-# CivicGit Backend
+﻿# CivicGit - Sistema de Democracia Direta
 
-Backend API para o CivicGit - Sistema de Democracia Direta com Versionamento
+CivicGit é uma plataforma de democracia direta com versionamento de leis, inspirada no Git. O sistema permite que cidadãos proponham, debatam e votem em emendas legislativas de forma transparente e auditável.
+
+## 🏗️ Arquitetura do Sistema
+
+O projeto é dividido em duas partes principais:
+
+*   **Backend**: Uma API robusta construída com **FastAPI**, utilizando **PostgreSQL** como banco de dados, **Redis** para cache/filas e **Celery** para tarefas assíncronas. Todo o ambiente é containerizado com **Docker**.
+*   **Frontend**: Uma interface moderna e responsiva construída com **React**, **Vite** e **Tailwind CSS**.
 
 ## 🚀 Tecnologias Utilizadas
 
-- **FastAPI** - Framework web moderno e rápido
-- **SQLAlchemy** - ORM para Python
-- **PostgreSQL** - Banco de dados relacional
-- **Redis** - Cache e message broker
-- **Celery** - Sistema de filas para tarefas assíncronas
-- **Docker** - Containerização
-- **JWT** - Autenticação via tokens
+### Backend
+*   **FastAPI**: Framework web de alta performance.
+*   **PostgreSQL**: Banco de dados relacional.
+*   **SQLAlchemy**: ORM para interação com o banco de dados.
+*   **Redis**: Gerenciamento de cache e filas de mensagens.
+*   **Celery**: Processamento de tarefas em segundo plano.
+*   **Docker & Docker Compose**: Orquestração de containers.
 
-## 📋 Funcionalidades
+### Frontend
+*   **React**: Biblioteca para construção de interfaces.
+*   **Vite**: Build tool rápida para desenvolvimento web.
+*   **Tailwind CSS**: Framework CSS utilitário.
+*   **TypeScript**: Superset JavaScript com tipagem estática.
+*   **Zustand**: Gerenciamento de estado leve e rápido.
 
-### 🔐 Autenticação e Autorização
-- Sistema de níveis de usuário (Anônimo, Registrado, Verificado, Especial)
-- Integração com Gov.br (OAuth2)
-- Tokens JWT com refresh
-- Multi-factor authentication (MFA)
+## 📋 Pré-requisitos
 
-### 📂 Repositórios
-- Criação de repositórios para jurisdições ou áreas de política
-- Configurações personalizadas por repositório
-- Sistema de permissões e visibilidade
+Antes de começar, certifique-se de ter instalado em sua máquina:
 
-### 📝 Propostas (Pull Requests)
-- Criação de propostas de emenda
-- Sistema de branches e merges
-- Assinaturas e limiares configuráveis
-- Ciclo de vida completo (rascunho → votação → resultado)
+*   [Docker](https://docs.docker.com/get-docker/) e Docker Compose
+*   [Node.js](https://nodejs.org/) (versão 18 ou superior)
+*   Git
 
-### 🐛 Issues (Demandas)
-- Reporte de problemas e sugestões
-- Sistema de comentários e threads
-- Categorização e priorização
-- Atribuição e acompanhamento
+## 🛠️ Instalação e Execução
 
-### 🗳️ Votação
-- Múltiplos métodos de votação (simples, qualificada, ranqueada)
-- Votação secreta com auditoria
-- Sistema de quorum e limiares
-- Proteção contra fraude
+### 1. Configuração do Backend
 
-### 📊 Versionamento
-- Controle de versão Git-like para leis
-- Commits com autor e justificativa
-- Visualização de diffs
-- Sistema de blame/responsabilização
-
-## 🏗️ Arquitetura
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│     Cliente     │    │      API        │    │   Banco de Dados│
-│   (Frontend)    │◄──►│   (FastAPI)     │◄──►│  (PostgreSQL)   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                                │
-                                ▼
-                       ┌─────────────────┐
-                       │   Cache/MQ      │
-                       │     (Redis)     │
-                       └─────────────────┘
-```
-
-### Microsserviços
-- **IAM Service**: Identidade e acesso
-- **Repository Service**: Gerenciamento de repositórios
-- **Proposal Service**: Propostas e versionamento
-- **Vote Service**: Sistema de votação
-- **Notification Service**: Notificações e emails
-
-## 🚦 Instalação Rápida
-
-### Método 1: Instalação Automatizada (Recomendado)
+O backend possui um script de instalação automatizado que configura o ambiente Docker, banco de dados e variáveis de ambiente.
 
 ```bash
-# Baixar e executar o instalador
-curl -fsSL https://civicgit.org/install.sh | bash
-
-# Ou manualmente
-chmod +x install.sh
+# Na raiz do projeto, execute:
 ./install.sh
 ```
 
-### Método 2: Docker Compose
+Este script irá:
+1.  Verificar os requisitos (Docker).
+2.  Criar o arquivo `.env` (se não existir).
+3.  Subir os containers (API, Banco, Redis).
+4.  Aguardar os serviços estarem prontos.
+5.  Rodar as migrações do banco de dados.
+6.  Executar testes de verificação (health checks).
+
+Após a instalação, a API estará disponível em `http://localhost:8000`.
+
+### 2. Configuração do Frontend
+
+Para configurar o frontend, utilize o script dedicado:
 
 ```bash
-# Clonar repositório
-git clone https://github.com/civicgit/civicgit.git
-cd civicgit/backend
-
-# Configurar ambiente
-cp .env.example .env
-# Editar .env com suas configurações
-
-# Iniciar serviços
-docker-compose up -d
+# Na raiz do projeto, execute:
+./install-frontend.sh
 ```
 
-### Método 3: Instalação Manual
+Este script irá instalar todas as dependências do Node.js necessárias.
+
+### 3. Executando a Aplicação
+
+Com o backend rodando (via Docker), inicie o servidor de desenvolvimento do frontend:
 
 ```bash
-# Instalar dependências
-pip install -r requirements.txt
-
-# Configurar banco de dados
-python app/db/init_db.py
-
-# Iniciar aplicação
-uvicorn app.main:app --reload
+cd frontend
+npm run dev
 ```
+
+Acesse a aplicação em seu navegador: `http://localhost:5173`
 
 ## 📚 Documentação da API
 
-A documentação interativa da API está disponível em:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+A documentação interativa da API (Swagger UI) pode ser acessada em:
 
-### Endpoints Principais
+*   **Swagger UI**: http://localhost:8000/docs
+*   **ReDoc**: http://localhost:8000/redoc
 
-#### Autenticação
-- `POST /api/v1/auth/login` - Login de usuário
-- `POST /api/v1/auth/refresh` - Refresh token
-- `GET /api/v1/auth/me` - Informações do usuário
+## 📂 Estrutura do Projeto
 
-#### Repositórios
-- `GET /api/v1/repositories` - Listar repositórios
-- `POST /api/v1/repositories` - Criar repositório
-- `GET /api/v1/repositories/{id}` - Detalhes do repositório
-
-#### Propostas
-- `GET /api/v1/proposals` - Listar propostas
-- `POST /api/v1/proposals` - Criar proposta
-- `GET /api/v1/proposals/{id}` - Detalhes da proposta
-- `POST /api/v1/proposals/{id}/sign` - Assinar proposta
-
-#### Issues
-- `GET /api/v1/issues` - Listar issues
-- `POST /api/v1/issues` - Criar issue
-- `GET /api/v1/issues/{id}` - Detalhes da issue
-- `POST /api/v1/issues/{id}/comments` - Adicionar comentário
-
-#### Votação
-- `POST /api/v1/votes` - Votar em uma proposta
-- `GET /api/v1/votes/results/{proposal_id}` - Resultados da votação
-
-## 🔧 Configuração
-
-### Variáveis de Ambiente
-
-```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/civicgit
-
-# Redis
-REDIS_URL=redis://localhost:6379/0
-
-# Security
-SECRET_KEY=your-secret-key-here
-
-# OAuth2
-GOV_BR_CLIENT_ID=your-gov-br-client-id
-GOV_BR_CLIENT_SECRET=your-gov-br-client-secret
-
-# Application
-DEBUG=True
-CORS_ORIGINS=["http://localhost:3000"]
+```
+pdt-itaguara/
+├── backend/                # Código fonte da API (FastAPI)
+│   ├── app/                # Aplicação principal
+│   ├── docker-compose.yml  # Configuração dos containers
+│   └── requirements.txt    # Dependências Python
+├── frontend/               # Código fonte da Interface (React)
+│   ├── src/                # Componentes, páginas e lógica
+│   ├── package.json        # Dependências Node.js
+│   └── vite.config.ts      # Configuração do Vite
+├── install.sh              # Script de instalação do Backend
+└── install-frontend.sh     # Script de instalação do Frontend
 ```
 
-### Configuração de Votação
+## 🔧 Comandos Úteis
 
-```env
-# Percentual mínimo para quorum
-QUORUM_PERCENTAGE=10
+### Backend (dentro da pasta `backend`)
 
-# Período de votação em dias
-VOTING_PERIOD_DAYS=7
+*   **Ver logs da API**: `docker-compose logs -f api`
+*   **Parar serviços**: `docker-compose down`
+*   **Reiniciar serviços**: `docker-compose restart`
+*   **Rodar testes**: `docker-compose exec api pytest`
 
-# Mínimo de assinaturas para votação
-MIN_SIGNATURES_FOR_VOTING=500
-```
+### Frontend (dentro da pasta `frontend`)
 
-## 🧪 Testes
+*   **Iniciar servidor dev**: `npm run dev`
+*   **Build para produção**: `npm run build`
+*   **Linting**: `npm run lint`
 
-```bash
-# Rodar todos os testes
-pytest
+## 🤝 Contribuição
 
-# Rodar testes com cobertura
-pytest --cov=app --cov-report=html
-
-# Rodar testes específicos
-pytest tests/test_auth.py
-pytest tests/test_proposals.py
-```
-
-## 🚀 Deploy
-
-### Produção com Docker
-
-```bash
-# Build para produção
-docker-compose -f docker-compose.prod.yml build
-
-# Deploy
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### Deploy com Kubernetes
-
-```bash
-# Aplicar configurações
-kubectl apply -f k8s/
-
-# Verificar status
-kubectl get pods
-kubectl get services
-```
-
-## 🔒 Segurança
-
-### Práticas Implementadas
-- Autenticação JWT com refresh tokens
-- Hash de senhas com bcrypt
-- Proteção contra SQL injection (SQLAlchemy ORM)
-- Validação de entrada de dados (Pydantic)
-- CORS configurável
-- Rate limiting
-- Auditoria de ações
-
-### Recomendações para Produção
-- Usar HTTPS sempre
-- Configurar rate limiting
-- Implementar WAF
-- Manter dependências atualizadas
-- Usar secrets management
-- Configurar monitoring e alerting
-
-## 📊 Monitoramento
-
-### Health Checks
-- `/health` - Status geral da aplicação
-- `/health/db` - Status do banco de dados
-- `/health/redis` - Status do Redis
-
-### Métricas
-- Tempo de resposta da API
-- Taxa de erro
-- Uso de recursos
-- Número de usuários ativos
-- Estatísticas de votação
-
-## 🤝 Contribuindo
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+1.  Faça um Fork do projeto.
+2.  Crie uma Branch para sua Feature (`git checkout -b feature/MinhaFeature`).
+3.  Faça o Commit de suas mudanças (`git commit -m 'Adiciona MinhaFeature'`).
+4.  Faça o Push para a Branch (`git push origin feature/MinhaFeature`).
+5.  Abra um Pull Request.
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a AGPLv3 - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
-## 👥 Comunidade
-- [GitHub Issues](https://github.com/civicgit/civicgit/issues)
-
-## 🙏 Agradecimentos
-
-- Todos os contribuidores open source
+Este projeto está licenciado sob a licença AGPLv3. Veja o arquivo `LICENSE` para mais detalhes.
